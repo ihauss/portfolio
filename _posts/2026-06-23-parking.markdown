@@ -1,0 +1,93 @@
+---
+layout: post
+title: "Smart Parking: Building a CPU-Only, Production-Grade Multi-Camera Vision System"
+date: 2026-03-02
+img: Parking.png
+categories: [portfolio, computer-vision]
+tags: [Python, FastAPI, C++, Docker, ARM, Edge-AI, Multi-Camera]
+---
+
+> *"What if you could deploy a real-time computer vision system across 20 cameras using just a $50 ARM processor, entirely without a GPU?"*
+
+In an era where most solutions throw heavy deep-learning models at every problem, I challenged myself to build a parking occupancy system that prioritizes **deployability**, **cost-optimization**, and **operational resilience**—making it ideal for smart city initiatives and industrial IoT right out of the box.
+
+*Documentation* : [Github](https://github.com/ihauss/Parking-Lot-Occupancy-Analysis)
+
+---
+**Tech Stack:** C++ · Python · FastAPI · Docker · ARM Cortex-A55 · OpenCV · RTSP
+---
+
+---
+
+### 1. Context & Constraints
+Most computer vision parking solutions rely on massive neural networks that demand expensive GPUs, high power consumption, and active cooling. In real-world deployments across Singapore's HDB carparks or industrial estates, these requirements are often prohibitive.
+
+**The Core Challenges:**
+- **Hardware Constraints:** The system must run on low-power ARM processors (Cortex-A55/A78) with limited RAM.
+- **Multi-Camera Orchestration:** Handling multiple video streams simultaneously without dropping frames or introducing cascading failures.
+- **Environmental Variability:** Coping with drastic lighting changes, partial occlusions, and weather interference.
+- **Self-Healing:** The system must recover gracefully from crashes or network hiccups without manual intervention.
+
+---
+
+### 2. Architecture & Design Philosophy
+> *"Instead of building a 'black-box' AI, I engineered a deterministic, stateful pipeline that treats reliability as a first-class feature."*
+
+**Key Architectural Decisions:**
+- **No Deep Learning Overhead:** The core vision engine is written in **C++**, leveraging classical image processing techniques (background subtraction, contour analysis) optimized for CPU vectorization. This keeps latency predictable.
+- **Persistent State Per Spot:** Each parking spot maintains its own historical state. This temporal filtering eliminates flickering and makes the system robust to sudden light changes (e.g., passing clouds or headlights).
+- **Failure Isolation:** The `Camera Manager` runs each camera feed in a sandboxed process. If one camera stream corrupts, it **never** brings down the others.
+- **Production-Ready Wrapper:** A **FastAPI** layer exposes clean REST endpoints, while Docker provides two deployment flavors: a full API server and a lean runtime for edge devices.
+
+**Architecture Flow:**
+```
+FastAPI (REST Layer) 
+    → Camera Manager (Orchestration) 
+    → C++ Bindings (Performance)
+    → Vision Engine (Frame Processing)
+    → Spot-Level State Tracking (Temporal Filtering)
+    → Aggregated Parking View (Metrics)
+```
+
+---
+
+### 3. Results & Quantifiable Metrics
+*(Recruiters in Singapore love hard numbers—here is the data)*
+
+**Performance Benchmarks** (on an ARM Cortex-A55/A78 with 6GB RAM, 1080p resolution):
+- **Throughput:** **12–14 FPS** per camera, consistently, using only the CPU.
+- **Latency:** Sub-100ms processing time, fully exposed via the `/metrics` endpoint for real-time monitoring.
+- **Resilience:** Passed rigorous stress tests for multi-camera concurrency and invalid input handling (corrupt frames, malformed JSON).
+- **Zero-Downtime Recovery:** Full state persistence ensures that upon restart, the system reloads reference images and spot definitions instantly without recalibration.
+
+---
+
+### 4. Key Lessons Learned (Engineering Takeaways)
+This project reinforced that **system design often trumps model accuracy** in production environments.
+
+1. **Statefulness is underrated:** Maintaining a history for each spot is a simple trick that delivers outsized stability gains against environmental noise.
+2. **Constraints breed innovation:** Forcing a "CPU-only" rule pushed me to deeply optimize memory management and threading, resulting in a much leaner codebase.
+3. **Isolation is non-negotiable:** Designing for partial failure (one camera down) rather than total failure made the system enterprise-ready.
+4. **Observability matters:** Exposing FPS, latency, and occupancy rates via an API allows seamless integration with external monitoring tools (e.g., Prometheus/Grafana).
+
+---
+
+### 5. Business Impact & Use Cases
+This isn't just an academic exercise—it solves tangible business problems for the Asian market:
+- **Cost-Effective Smart Carparks:** Deployable on existing CCTV infrastructure without upgrading to expensive GPU servers.
+- **Edge AI for Industrial Sites:** Monitoring loading bay occupancy in warehouses where power and cooling are limited.
+- **Scalable Urban Planning:** Providing aggregated occupancy heatmaps for city councils to optimize traffic flow.
+
+**Future Roadmap:**
+- Automatic camera calibration (homography) for better spatial mapping.
+- Enhanced temporal tracking to handle long-term occlusions.
+- Scaling the manager to handle 50+ cameras in a distributed edge cluster.
+
+---
+
+### 6. Conclusion
+> *"Smart Parking is a testament to the fact that robust, production-ready computer vision doesn't always require the latest GPU. By focusing on architecture, state management, and deterministic logic, I delivered a system that is not only cheaper to run but easier to maintain and scale."*
+
+This project highlights my ability to bridge **low-level C++ optimization** with **high-level API design**, while keeping a relentless focus on real-world deployability—a skillset perfectly aligned with Singapore's push toward smart nation infrastructure.
+
+---
