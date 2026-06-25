@@ -1,0 +1,137 @@
+---
+layout: post
+title: "Steel Mill Cobble Detection: Real‑Time AI That Protects Lives"
+date: 2026-06-09
+img: cobble.png
+categories: [portfolio, computer-vision, industrial-ai]
+tags: [Python, PyTorch, YOLOv8, ResNet, ROS2, OpenCV, Edge-AI, Safety-Critical]
+---
+
+> *"A cobble in a steel mill is a nightmare — hot metal escaping the production line at speed, endangering anyone nearby. I built an AI system that spots it in 0.5 seconds, using only the cameras already in place."*
+
+This project delivered a **production‑ready, CPU‑only computer vision pipeline** for ArcelorMittal, one of the world's largest steel producers — helping them move closer to their **zero‑fatality safety goal** without requiring expensive hardware upgrades.
+
+*Documentation* : [Github](https://github.com/ihauss/ArcelorMittal-Steel-Mill-Cobble-Detection)
+
+*Demo Video* : [Watch the system in action](https://www.youtube.com/watch?v=raMdoFbxsjw)
+
+---
+
+## The Problem: When Milliseconds Mean Lives
+
+In a steel mill, a *cobble* is a sudden, violent event where hot metal breaks out of the rolling process and flies unpredictably through the plant. For field workers nearby, these events are **life‑threatening**.
+
+Traditional monitoring relies on human observation, which has critical flaws:
+
+- **Reactive** — by the time an operator spots the cobble, it's often too late
+- **High‑risk** — workers must be physically close to the line to see it
+- **Inconsistent** — dependent on vigilance, fatigue, and line‑of‑sight
+
+ArcelorMittal's **zero‑fatality safety goal** demanded an automated solution that could work with **existing infrastructure** — no new sensors, no expensive GPUs.
+
+---
+
+## The Solution: A Hybrid CV + Deep Learning Pipeline
+
+> *"I designed a system that balances speed and accuracy — running 5 cameras in parallel on a CPU‑only industrial computer, with a 0.5‑second alert latency."*
+
+I **led this project end‑to‑end**, collaborating closely with the Head of Technical Service and automation engineers (PLC specialists) to align the AI pipeline with factory constraints and existing control systems.
+
+### Key Architectural Decisions
+
+**1. ROS2 as the Orchestration Backbone**
+
+ROS2 provided the modular, multi‑threaded architecture needed to process **5 camera streams in parallel** — each on its own thread, achieving **10 fps per stream** with sub‑second latency.
+
+**2. A Three‑Stage Detection Pipeline**
+
+| Stage | Technology | Purpose |
+|-------|------------|---------|
+| **Line Detection** | YOLOv8 | Identifies the rolling mill area of interest |
+| **Anomaly Detection** | HSV filtering + KNN background subtractor | Highlights unexpected movement or objects in the line |
+| **False Alarm Filtering** | ResNet classifier | Distinguishes real cobbles from benign anomalies (steam, lighting changes, scale drops) |
+
+**3. CPU‑Only Deployment**
+
+The entire pipeline runs on **standard industrial computers** with no GPU acceleration — a hard requirement from the plant's IT constraints.
+
+**4. Instant Alerting**
+
+When a real cobble is confirmed, an **instant alert** is sent to the control room and field workers via audible and visual signals.
+
+---
+
+## Pipeline Overview
+
+```
+5× Security Cameras (RTSP)
+    ↓
+ROS2 Nodes (Multi‑threaded, 1 per camera)
+    ↓
+YOLOv8 → Production Line Detection
+    ↓
+HSV + KNN → Anomaly Detection
+    ↓
+ResNet → False Alarm Filtering
+    ↓
+Alert Trigger → Control Room + Field Workers
+```
+
+> *"Each camera stream is processed independently on its own thread, ensuring that a bottleneck in one stream never blocks the others."*
+
+---
+
+## Results & Quantifiable Metrics
+
+| Metric | Performance |
+|--------|-------------|
+| **Cameras** | 5 standard security cameras — no hardware upgrades |
+| **Frame rate** | 10 fps per camera |
+| **End‑to‑end alert latency** | **0.5 seconds** |
+| **Hardware** | CPU‑only industrial computers |
+
+**What this means in practice:**
+
+- A cobble is detected and alerted **before** it becomes a danger to workers
+- The plant's existing camera infrastructure is fully leveraged — no new capital expenditure
+- False alarms are filtered out, preventing operator fatigue and alert desensitisation
+
+---
+
+## Key Lessons Learned
+
+This project reinforced that **industrial AI is as much about integration as it is about algorithms**.
+
+1. **Constraints drive innovation:** Forcing a "CPU‑only" rule pushed me to optimise the pipeline ruthlessly — YOLOv8 for localisation, classical CV for anomaly detection, and a lightweight ResNet for classification.
+2. **ROS2 is a game‑changer for vision pipelines:** Its multi‑threaded, topic‑based architecture made it trivial to scale from 1 to 5 cameras without rewriting core logic.
+3. **Domain expertise is non‑negotiable:** Working alongside automation engineers and safety officers was essential to understanding what a "real" cobble looks like versus a false positive.
+4. **False positives kill trust:** A system that cries wolf too often gets ignored. The ResNet classifier was critical to maintaining operator confidence.
+
+---
+
+## Business Impact & Use Cases
+
+This system solves a **real safety problem** in one of the world's heaviest industries:
+
+- **Worker Safety:** The 0.5‑second alert gives field workers precious time to move to safety
+- **Zero‑Fatality Goal:** Directly supports ArcelorMittal's corporate safety mandate
+- **Cost‑Effective:** No new sensors, no GPUs — just existing cameras and industrial PCs
+
+**Why this matters for Asia:**
+
+Steel production is a cornerstone of industrial development across Asia — from China and India to Southeast Asia. A low‑cost, CPU‑only safety system that integrates with existing infrastructure is exactly what plant operators need to improve safety without disrupting production or breaking the budget.
+
+---
+
+## Conclusion
+
+> *"This project proved that you don't need a data centre to save lives — just a well‑designed pipeline, the right architecture, and a relentless focus on the user."*
+
+This project demonstrates my ability to:
+
+- **Lead end‑to‑end AI projects** — from requirement gathering to on‑site deployment
+- **Design hybrid CV + DL pipelines** that balance speed and accuracy on constrained hardware
+- **Orchestrate multi‑camera systems** using ROS2
+- **Collaborate with domain experts** to deliver solutions that actually work in the field
+
+---

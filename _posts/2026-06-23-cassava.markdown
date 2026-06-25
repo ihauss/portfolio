@@ -1,0 +1,141 @@
+---
+layout: post
+title: "Cassava Leaf Disease Classification: Ensemble Learning for Food Security"
+date: 2025-06-03
+img: cassava.jpg
+categories: [portfolio, computer-vision, deep-learning]
+tags: [Python, PyTorch, Vision-Transformer, MobileNetV3, Ensemble-Learning, Kaggle, Agricultural-AI]
+---
+
+> *"Cassava feeds over 800 million people daily. But viral diseases can wipe out an entire harvest in weeks. I built an ensemble of Vision Transformers and MobileNetV3 to detect five distinct leaf diseases — giving smallholder farmers a fighting chance."*
+
+This project was my solution to the **2021 Kaggle Cassava Leaf Disease Classification competition**, where I developed a reliable deep learning pipeline to identify cassava leaf diseases from RGB images.
+
+*Documentation* : [Github](https://github.com/ihauss/Cassava-Leaf-Disease)
+
+---
+
+## The Problem: A Silent Threat to Global Food Security
+
+Cassava is a vital crop across Africa, Asia, and South America — providing a staple food source for over 800 million people. However, the plant is highly susceptible to viral diseases that can devastate yields and threaten livelihoods.
+
+**The Core Challenges:**
+
+- **Five disease classes** to distinguish, some with visually similar symptoms:
+  - Cassava Bacterial Blight (CBB)
+  - Cassava Brown Streak Disease (CBSD)
+  - Cassava Green Mottle (CGM)
+  - Cassava Mosaic Disease (CMD)
+  - Healthy
+
+- **Limited labelled data** — agricultural datasets are often small and imbalanced
+- **Deployment constraints** — any practical solution must run on modest hardware in resource‑constrained settings
+- **Early detection is critical** — the difference between a treatable outbreak and total crop loss is a matter of days
+
+---
+
+## The Solution: A Hybrid Ensemble Approach
+
+> *"Rather than betting on a single model, I combined a large Transformer with a lightweight CNN — getting the best of both worlds."*
+
+### Methodology
+
+The workflow was structured into three clear phases:
+
+**1. Data Preprocessing**
+Images were resized, augmented, and normalised using `torchvision.transforms` — applying random flips, rotations, and colour jitter to artificially expand the dataset and improve generalisation.
+
+**2. Dual Model Architecture**
+I trained two fundamentally different models in parallel:
+
+| Model | Strengths |
+|-------|-----------|
+| **Vision Transformer (ViT)** | Captures long‑range spatial dependencies and global context |
+| **MobileNetV3** | Lightweight, fast, and resilient to overfitting on small datasets |
+
+**3. Ensemble Averaging**
+The final prediction was computed by **averaging the softmax outputs** of both models. This ensemble approach:
+- Mitigated overfitting from either individual model
+- Benefited from both the ViT's representational power and MobileNetV3's efficiency
+- Demonstrated **improved generalisation** on the validation set compared to either model alone
+
+### Training Configuration
+
+- **Loss function:** Cross‑entropy loss
+- **Learning rate scheduling:** CosineAnnealingLR with configurable `T_max`
+- **Validation:** Accuracy evaluated on a separate held‑out validation set
+
+---
+
+## Pipeline Overview
+
+```
+Cassava Leaf Images (RGB)
+    ↓
+Preprocessing (resize, augment, normalise)
+    ↓
+┌───────────────────────┐
+│   Vision Transformer  │──┐
+│       (ViT)           │  │
+└───────────────────────┘  │
+                           ├──→ Ensemble Averaging ──→ Final Prediction
+┌───────────────────────┐  │        (5 classes)
+│     MobileNetV3       │──┘
+└───────────────────────┘
+```
+
+---
+
+## Results & Quantifiable Metrics
+
+| Metric | Performance |
+|--------|-------------|
+| **Validation accuracy** | Improved over single‑model baselines |
+| **Ensemble gain** | Demonstrated superior generalisation vs. ViT or MobileNetV3 alone |
+| **Inference** | Efficient enough for CPU‑based deployment |
+
+**What this means in practice:**
+
+- A farmer could photograph a suspicious leaf with a smartphone and get a reliable diagnosis within seconds
+- Early detection enables targeted treatment, reducing crop loss and improving food security
+- The ensemble approach provides a **safety margin** — if one model is uncertain, the other compensates
+
+---
+
+## Key Lessons Learned
+
+This project taught me that **in agricultural AI, robustness matters more than peak accuracy**.
+
+1. **Ensembles are underrated:** Averaging predictions from a large Transformer and a lightweight CNN gave better generalisation than either model alone — a simple trick that works surprisingly well.
+2. **Data augmentation is non‑negotiable:** With limited labelled data, aggressive augmentation was essential to prevent overfitting and teach the model to recognise diseases across different lighting, angles, and leaf conditions.
+3. **Know your deployment constraints:** MobileNetV3 wasn't just a backup — it was a deliberate choice to ensure the pipeline could run on edge devices, not just in the cloud.
+4. **Kaggle competitions are great sandboxes:** They force you to iterate fast, experiment with architectures, and learn what actually works — not just what looks good on paper.
+
+---
+
+## Business Impact & Use Cases
+
+This isn't just a competition entry — it's a blueprint for real‑world agricultural AI:
+
+- **Smallholder Farmer Support:** A mobile app could use this model to provide instant disease diagnosis, even offline.
+- **Supply Chain Protection:** Early detection at the farm level prevents diseased crops from entering the supply chain.
+- **Government & NGO Monitoring:** Aggregated data can help track disease outbreaks and guide policy responses.
+
+**Why this matters for Asia:**
+
+Cassava is a critical crop across Southeast Asia — from Thailand and Vietnam to Indonesia and the Philippines. A lightweight, accurate classification system that runs on commodity hardware could help protect millions of livelihoods and strengthen regional food security.
+
+---
+
+## Conclusion
+
+> *"This project proved that you don't need a supercomputer to solve real‑world problems — just a thoughtful ensemble, careful preprocessing, and a relentless focus on robustness."*
+
+This project demonstrates my ability to:
+
+- **Design and train deep learning pipelines** for image classification
+- **Implement ensemble methods** to improve generalisation
+- **Work with Vision Transformers and modern CNNs** in PyTorch
+- **Adapt quickly** to domain‑specific challenges (agriculture, limited data, deployment constraints)
+
+---
